@@ -19,8 +19,8 @@ const alertStateDefault = {
 interface IMintUI {
     rpcHost: string;
     txTimeout: number;
-    candyMachineId: PublicKey;
     connection: anchor.web3.Connection;
+    candyMachineId?: anchor.web3.PublicKey;
 }
 
 const MintUI : FC<IMintUI> = ({candyMachineId, txTimeout, rpcHost, connection}) => {
@@ -43,7 +43,7 @@ const MintUI : FC<IMintUI> = ({candyMachineId, txTimeout, rpcHost, connection}) 
     }, [wallet]);
 
     const refreshCandyMachineState = useCallback(async () => {
-        if (!anchorWallet || !candyMachine) return;
+        if (!anchorWallet || !candyMachineId) return;
         try {
           const cndy = await getCandyMachineState(anchorWallet, candyMachineId, connection);
           let active = cndy?.state.goLiveDate?.toNumber() < new Date().getTime() / 1000;

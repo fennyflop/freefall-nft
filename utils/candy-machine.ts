@@ -16,6 +16,19 @@ import {
   SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID,
 } from './utils';
 
+export const getCandyMachineId = (): anchor.web3.PublicKey | undefined => {
+    try {
+      const candyMachineId = new anchor.web3.PublicKey(
+        process.env.REACT_APP_CANDY_MACHINE_ID!,
+      );
+  
+      return candyMachineId;
+    } catch (e) {
+      console.log('Failed to construct CandyMachineId', e);
+      return undefined;
+    }
+  };
+
 export const CANDY_MACHINE_PROGRAM = new anchor.web3.PublicKey(
   'cndy3Z4yapfJBmL3ShUp5exZKqR3z33thTzeNMm2gRZ',
 );
