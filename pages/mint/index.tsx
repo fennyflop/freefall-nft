@@ -16,6 +16,8 @@ const connection = new anchor.web3.Connection(
 
 const timeout = 30000;
 
+
+
 const Home: NextPage = () => {
   return (
     <main className={styles.page}>

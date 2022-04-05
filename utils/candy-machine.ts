@@ -1,4 +1,5 @@
-import * as anchor from '@project-serum/anchor';
+
+import * as anchor from '@project-serum/anchor'
 
 import { MintLayout, TOKEN_PROGRAM_ID, Token } from '@solana/spl-token';
 import {
@@ -18,6 +19,8 @@ import {
 
 export const getCandyMachineId = (): anchor.web3.PublicKey | undefined => {
     try {
+      const a = process.env.REACT_APP_CANDY_MACHINE_ID;
+      console.log(a, 'wqdqwd');
       const candyMachineId = new anchor.web3.PublicKey(
         process.env.REACT_APP_CANDY_MACHINE_ID!,
       );

@@ -7,6 +7,7 @@ import { PublicKey, Transaction } from '@solana/web3.js';
 import { AlertState, getAtaForMint, toDate } from '../../utils/utils';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { awaitTransactionSignatureConfirmation, CandyMachineAccount, getCandyMachineState, mintOneToken } from '../../utils/candy-machine';
+import { MintButton } from '../mint-button/mint-button';
 
 require('@solana/wallet-adapter-react-ui/styles.css');
 
@@ -213,7 +214,15 @@ const MintUI : FC<IMintUI> = ({candyMachineId, txTimeout, rpcHost, connection}) 
                 !wallet.connected ?
                 <WalletMultiButton className={`${buttonClassName} ${styles.button}`}>Select Wallet</WalletMultiButton>
                 :
-                <></>
+                <>
+                  <MintButton 
+                    candyMachine={candyMachine}
+                    isMinting={isUserMinting}
+                    setIsMinting={val => setIsUserMinting(val)}
+                    onMint={onMint}
+                    isActive={isActive || (isPresale && isWhitelistUser)}
+                  />
+                </>
               }
           </section>
         );
