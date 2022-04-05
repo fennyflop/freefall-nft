@@ -19,6 +19,7 @@
     "@solana/wallet-adapter-wallets": "^0.15.3",
     "@solana/web3.js": "^1.36.0",
     "dotenv": "^16.0.0",
+    "firebase": "^9.6.10",
     "next": "12.1.4",
     "react": "18.0.0",
     "react-dom": "18.0.0"

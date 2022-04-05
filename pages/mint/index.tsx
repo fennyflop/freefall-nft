@@ -16,9 +16,8 @@ const connection = new anchor.web3.Connection(
 
 const timeout = 30000;
 
-
-
 const Home: NextPage = () => {
+  console.log(candyMachineId);
   return (
     <main className={styles.page}>
       <MintProvider network={network}>
