@@ -18,7 +18,7 @@ import {
 
 export const getCandyMachineId = (): anchor.web3.PublicKey | undefined => {
     try {
-      return new anchor.web3.PublicKey("5YqkKAdP624H6d6y5KoDY6vMxx8vahi1gMTFeUS5x9NZ"); // change
+      return new anchor.web3.PublicKey("BVpfJu1Ys5xLuEBgSSB6uq3uhZES2BYXsMCvA94s4EWJ"); // change
     } catch (e) {
       console.log('Failed to construct CandyMachineId', e);
       return undefined;

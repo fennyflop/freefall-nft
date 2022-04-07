@@ -1,3 +1,6 @@
-.section {
-    
+.button {
+    transition: all .2s ease-in-out;
+}
+.button:hover {
+    background-color: #371091 !important;
 }

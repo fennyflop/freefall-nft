@@ -222,18 +222,14 @@ const MintUI : FC<IMintUI> = ({candyMachineId, txTimeout, rpcHost, connection}) 
         refreshCandyMachineState,
       ]);
 
-      useEffect(() => {
-        const unsub = onSnapshot(doc(firestore, "collection", "count"), (doc) => {
-          setItemsRemaining(doc.data()!.remaining); // should be a variable
-        });
-        return () => {
-          unsub();
-        };
-      }, [])
-
-      useEffect(() => {
-        console.log(itemsRemaining);
-      })
+      // useEffect(() => {
+      //   const unsub = onSnapshot(doc(firestore, "collection", "count"), (doc) => {
+      //     setItemsRemaining(doc.data()!.remaining); // should be a variable
+      //   });
+      //   return () => {
+      //     unsub();
+      //   };
+      // }, [])
 
         return (
           <section className={styles.section}>

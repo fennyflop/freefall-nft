@@ -16,7 +16,7 @@ export const firestore = getFirestore();
 
 export const incrementMintCount = async (currentValue: number) => {
     setDoc(doc(firestore, "collection", "count"), {
-        max: 10, // MAX should not be hardcoded
+        max: 125, // MAX should not be hardcoded
         remaining: currentValue,
     })
 }

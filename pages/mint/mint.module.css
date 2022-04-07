@@ -3,8 +3,10 @@
     height: 100vh;
     
     display: flex;
+    flex-direction: column;
+    
     align-items: center;
     justify-content: center;
 
-    background-color: #10141f;
+    background-color: #0B0E11;
 }
