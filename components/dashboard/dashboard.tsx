@@ -6,7 +6,7 @@ import { MintContext } from '../../context/mint-count';
 interface IDashboard {}
 
 const Dashboard : FC<IDashboard> = () => {
-    const {max, remaining} = useContext(MintContext);
+    const {mintData: {max, remaining}} = useContext(MintContext);
 
     return (
         <section className={styles.container}>

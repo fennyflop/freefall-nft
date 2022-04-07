@@ -1,4 +1,4 @@
-import { useState, useMemo, FC, useCallback, useEffect } from 'react';
+import { useState, useMemo, FC, useCallback, useEffect, useContext } from 'react';
 import * as anchor from '@project-serum/anchor';
 import { useWallet } from '@solana/wallet-adapter-react';
 
@@ -6,10 +6,10 @@ import styles from './mint-ui.module.css';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import { AlertState, getAtaForMint, toDate } from '../../utils/utils';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { awaitTransactionSignatureConfirmation, CandyMachineAccount, getCandyMachineState, mintOneToken } from '../../utils/candy-machine';
+import { awaitTransactionSignatureConfirmation, CandyMachineAccount, getCandyMachineState, getCountdownDate, mintOneToken } from '../../utils/candy-machine';
 import { MintButton } from '../mint-button/mint-button';
-import { doc, onSnapshot } from 'firebase/firestore';
-import { firestore, incrementMintCount } from '../../utils/firebase';
+import { updateMintCount } from '../../utils/firebase';
+import { MintContext } from '../../context/mint-count';
 
 require('@solana/wallet-adapter-react-ui/styles.css');
 
@@ -46,18 +46,16 @@ const MintUI : FC<IMintUI> = ({candyMachineId, txTimeout, rpcHost, connection}) 
     }, [wallet]);
 
     const refreshCandyMachineState = useCallback(async () => {
+      console.log("update");
       if (!anchorWallet || !candyMachineId) return;
         try {
           const cndy = await getCandyMachineState(anchorWallet, candyMachineId, connection);
           let active = cndy?.state.goLiveDate?.toNumber() < new Date().getTime() / 1000;
           let presale = false;
-          // whitelist mint?
           if (cndy?.state.whitelistMintSettings) {
-            // is it a presale mint?
             if (cndy.state.whitelistMintSettings.presale && (!cndy.state.goLiveDate || cndy.state.goLiveDate.toNumber() > new Date().getTime() / 1000)) {
               presale = true;
             }
-            // is there a discount?
             if (cndy.state.whitelistMintSettings.discountPrice) {
               setDiscountPrice(cndy.state.whitelistMintSettings.discountPrice);
             } else {
@@ -66,19 +64,16 @@ const MintUI : FC<IMintUI> = ({candyMachineId, txTimeout, rpcHost, connection}) 
                 cndy.state.isWhitelistOnly = true;
               }
             }
-            // retrieves the whitelist token
             const mint = new anchor.web3.PublicKey(cndy.state.whitelistMintSettings.mint);
             const token = (await getAtaForMint(mint, anchorWallet.publicKey))[0];
 
             try {
               const balance = await connection.getTokenAccountBalance(token);
               let valid = parseInt(balance.value.amount) > 0;
-              // only whitelist the user if the balance > 0
               setIsWhitelistUser(valid);
               active = (presale && valid) || active;
             } catch (e) {
               setIsWhitelistUser(false);
-              // no whitelist user, no mint
               if (cndy.state.isWhitelistOnly) {
                 active = false;
               }
@@ -86,7 +81,6 @@ const MintUI : FC<IMintUI> = ({candyMachineId, txTimeout, rpcHost, connection}) 
               console.log(e);
             }
           }
-          // datetime to stop the mint?
           if (cndy?.state.endSettings?.endSettingType.date) {
             setEndDate(toDate(cndy.state.endSettings.number));
             if (
@@ -96,19 +90,16 @@ const MintUI : FC<IMintUI> = ({candyMachineId, txTimeout, rpcHost, connection}) 
               active = false;
             }
           }
-          // amount to stop the mint?
           if (cndy?.state.endSettings?.endSettingType.amount) {
             let limit = Math.min(cndy.state.endSettings.number.toNumber(), cndy.state.itemsAvailable,);
             if (cndy.state.itemsRedeemed < limit) {
-              // setItemsRemaining(limit - cndy.state.itemsRedeemed);
-              await incrementMintCount(limit - cndy.state.itemsRedeemed);
+              await updateMintCount(limit - cndy.state.itemsRedeemed);
             } else {
               setItemsRemaining(0);
               cndy.state.isSoldOut = true;
             }
           } else {
-            // setItemsRemaining(cndy.state.itemsRemaining);
-            await incrementMintCount(cndy.state.itemsRemaining)
+            await updateMintCount(cndy.state.itemsRemaining)
           }
 
           if (cndy.state.isSoldOut) {
@@ -117,7 +108,7 @@ const MintUI : FC<IMintUI> = ({candyMachineId, txTimeout, rpcHost, connection}) 
 
           setIsActive((cndy.state.isActive = active));
           setIsPresale((cndy.state.isPresale = presale));
-          console.log('SET CNDY');
+
           setCandyMachine(cndy);
         } catch (e) {
           console.log('There was a problem fetching Candy Machine state');
@@ -129,7 +120,6 @@ const MintUI : FC<IMintUI> = ({candyMachineId, txTimeout, rpcHost, connection}) 
         try {
           setIsUserMinting(true);
           document.getElementById('#identity')?.click();
-          console.log(candyMachine?.program);
           if (wallet.connected && candyMachine?.program && wallet.publicKey) {
             let mintOne = await mintOneToken(candyMachine, wallet.publicKey, beforeTransactions, afterTransactions);
     
@@ -149,7 +139,7 @@ const MintUI : FC<IMintUI> = ({candyMachineId, txTimeout, rpcHost, connection}) 
               // manual update since the refresh might not detect
               // the change immediately
               let remaining = itemsRemaining! - 1;
-              await incrementMintCount(remaining);
+              await updateMintCount(remaining);
               // setItemsRemaining(remaining);
               setIsActive((candyMachine.state.isActive = remaining > 0));
               candyMachine.state.isSoldOut = remaining === 0;
@@ -215,21 +205,7 @@ const MintUI : FC<IMintUI> = ({candyMachineId, txTimeout, rpcHost, connection}) 
 
       useEffect(() => {
         refreshCandyMachineState();
-      }, [
-        anchorWallet,
-        candyMachineId,
-        connection,
-        refreshCandyMachineState,
-      ]);
-
-      // useEffect(() => {
-      //   const unsub = onSnapshot(doc(firestore, "collection", "count"), (doc) => {
-      //     setItemsRemaining(doc.data()!.remaining); // should be a variable
-      //   });
-      //   return () => {
-      //     unsub();
-      //   };
-      // }, [])
+      }, [anchorWallet, candyMachineId, connection, refreshCandyMachineState]);
 
         return (
           <section className={styles.section}>

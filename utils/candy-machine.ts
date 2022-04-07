@@ -14,6 +14,7 @@ import {
   getNetworkExpire,
   getNetworkToken,
   SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID,
+  toDate,
 } from './utils';
 
 export const getCandyMachineId = (): anchor.web3.PublicKey | undefined => {
@@ -589,6 +590,17 @@ export const mintOneToken = async (
   }
 
   return [];
+};
+
+export const getCountdownDate = (candyMachine: CandyMachineAccount): Date | undefined => {
+  if (candyMachine.state.isActive && candyMachine.state.endSettings?.endSettingType.date) return toDate(candyMachine.state.endSettings.number);
+  return toDate(
+    candyMachine.state.goLiveDate
+      ? candyMachine.state.goLiveDate
+      : candyMachine.state.isPresale
+      ? new anchor.BN(new Date().getTime() / 1000)
+      : undefined,
+  );
 };
 
 export const shortenAddress = (address: string, chars = 4): string => {
