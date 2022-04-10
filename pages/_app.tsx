@@ -8,6 +8,7 @@ import { doc, onSnapshot } from 'firebase/firestore';
 
 function FreeFallApp({ Component, pageProps }: AppProps) {
   const [countdownDate, setCountdownDate] = useState<Date | undefined>();
+
   const [mintData, setMintData] = useState<{max: number, remaining: number}>({max: 0, remaining: 0});
   
   const mintState = {mintData, setMintData, countdownDate, setCountdownDate};
@@ -22,6 +23,10 @@ function FreeFallApp({ Component, pageProps }: AppProps) {
       unsub();
     };
   }, []);
+
+  useEffect(() => {
+    console.log(countdownDate);
+  }, [countdownDate]);
 
   return (
     <MintContext.Provider value={mintState}>

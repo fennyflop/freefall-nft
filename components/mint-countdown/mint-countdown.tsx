@@ -1,6 +1,8 @@
 import {FC, useContext} from 'react';
 import Countdown from 'react-countdown';
-import styles from './dashboard.module.css';
+import { MintContext } from '../../context/mint-count';
+import { toDate } from '../../utils/utils';
+import styles from './mint-countdown.module.css';
 
 interface IMintRenderer {
     days: number;
@@ -10,32 +12,46 @@ interface IMintRenderer {
     completed: boolean;
 }
 
-interface IMintCountdown {
-    date: Date | undefined;
-    style?: React.CSSProperties;
-    status?: string;
-    onComplete?: () => void;
-}
-
-const MintRenderer : FC<IMintRenderer> = ({days, hours, minutes, seconds}) => {
-    hours += days * 24;
+const MintRenderer : FC<IMintRenderer> = ({days, hours, minutes, seconds, completed}) => {
 
     return (
-        <section className={styles.countdown}>
-            <p>{hours}</p>
-            <p>{minutes}</p>
-            <p>{seconds}</p>
+        <section className={styles.container}>
+            {/* <h2 className={styles.header}>public sale</h2> */}
+            <div className={styles.countdown}>
+                {days && 
+                <div className={styles.count}>
+                    <p className={styles.number}>{days}</p>
+                    <span className={styles.name}>days</span>
+                </div>}
+
+                <div className={styles.count}>
+                    <p className={styles.number}>{hours < 10 ? `0${hours}` : hours}</p>
+                    <span className={styles.name}>hours</span>
+                </div>
+
+                <div className={styles.count}>
+                    <p className={styles.number}>{minutes < 10 ? `0${minutes}` : minutes}</p>
+                    <span className={styles.name}>mins</span>
+                </div>
+                <div className={styles.count}>
+                    <p className={styles.number}>{seconds < 10 ? `0${seconds}` : seconds}</p>
+                    <span className={styles.name}>secs</span>
+                </div>
+            </div>
         </section>
     );
 }
 
-const MintCountdown : FC<IMintCountdown> = ({date, onComplete}) => {
-    if (!date) return null;
+const MintCountdown: FC = () => {
+    const {countdownDate} = useContext(MintContext);
+
+    if (!countdownDate?.getTime()) return null;
+
     return (
         <Countdown
-            date={date}
+            date={countdownDate?.getTime() }
             renderer={MintRenderer}
-            onComplete={onComplete}
+            onComplete={console.log}
         />
     );
 }

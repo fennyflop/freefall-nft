@@ -1,4 +1,4 @@
-import { useState, useMemo, FC, useCallback, useEffect, useContext } from 'react';
+import { useState, useMemo, FC, useCallback, useEffect, useContext, memo } from 'react';
 import * as anchor from '@project-serum/anchor';
 import { useWallet } from '@solana/wallet-adapter-react';
 
@@ -26,7 +26,9 @@ interface IMintUI {
     candyMachineId?: anchor.web3.PublicKey;
 }
 
-const MintUI : FC<IMintUI> = ({candyMachineId, txTimeout, rpcHost, connection}) => {
+const MintUI : FC<IMintUI> = memo(({candyMachineId, txTimeout, rpcHost, connection}) => {
+    const {setCountdownDate} = useContext(MintContext);
+
     const [endDate, setEndDate] = useState<Date>();
     const [isActive, setIsActive] = useState(false);
     const [isPresale, setIsPresale] = useState(false);
@@ -140,7 +142,6 @@ const MintUI : FC<IMintUI> = ({candyMachineId, txTimeout, rpcHost, connection}) 
               // the change immediately
               let remaining = itemsRemaining! - 1;
               await updateMintCount(remaining);
-              // setItemsRemaining(remaining);
               setIsActive((candyMachine.state.isActive = remaining > 0));
               candyMachine.state.isSoldOut = remaining === 0;
               setAlertState({
@@ -207,6 +208,10 @@ const MintUI : FC<IMintUI> = ({candyMachineId, txTimeout, rpcHost, connection}) 
         refreshCandyMachineState();
       }, [anchorWallet, candyMachineId, connection, refreshCandyMachineState]);
 
+      useEffect(() => {
+        if (candyMachine) setCountdownDate(getCountdownDate(candyMachine));
+      }, [candyMachine]);
+
         return (
           <section className={styles.section}>
               {
@@ -225,6 +230,6 @@ const MintUI : FC<IMintUI> = ({candyMachineId, txTimeout, rpcHost, connection}) 
               }
           </section>
         );
-}
+});
 
 export default MintUI;

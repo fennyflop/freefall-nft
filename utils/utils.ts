@@ -17,7 +17,8 @@ export const toDate = (value?: anchor.BN) => {
   if (!value) {
     return;
   }
-
+  // console.log(value.toNumber() * 1000);
+  // console.log(new Date(value.toNumber() * 1000));
   return new Date(value.toNumber() * 1000);
 };
 

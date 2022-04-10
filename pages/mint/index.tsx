@@ -7,6 +7,8 @@ import MintUI from '../../components/mint-ui/mint-ui';
 import MintProvider from '../../components/mint-provider/mint-provider';
 import { getCandyMachineId } from '../../utils/candy-machine';
 import Dashboard from '../../components/dashboard/dashboard';
+import { memo } from 'react';
+import MintCountdown from '../../components/mint-countdown/mint-countdown';
 
 const candyMachineId = getCandyMachineId();
 const network = process.env.REACT_APP_SOLANA_NETWORK as WalletAdapterNetwork;
@@ -17,16 +19,17 @@ const connection = new anchor.web3.Connection(
 
 const timeout = 30000;
 
-const Home: NextPage = () => {
+const Home = memo(() => {
 
   return (
     <main className={styles.page}>
+      <MintCountdown />
       <Dashboard />
       <MintProvider network={network}>
         <MintUI candyMachineId={candyMachineId} txTimeout={timeout} rpcHost={rpcHost} connection={connection} />
       </MintProvider>
     </main>
   )
-}
+});
 
 export default Home
