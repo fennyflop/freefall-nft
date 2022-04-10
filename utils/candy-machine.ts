@@ -594,7 +594,6 @@ export const mintOneToken = async (
 
 export const getCountdownDate = (candyMachine: CandyMachineAccount): Date | undefined => {
   if (candyMachine.state.isActive && candyMachine.state.endSettings?.endSettingType.date) return toDate(candyMachine.state.endSettings.number);
-    console.log(candyMachine.state.goLiveDate, candyMachine.state.goLiveDate)
   return toDate(
     candyMachine.state.goLiveDate
       ? candyMachine.state.goLiveDate

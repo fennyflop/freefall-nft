@@ -1,12 +1,16 @@
 .header {
-    color: white;
     margin: 0;
+    color: white;
+    text-align: center;
+    font-weight: normal;
+    text-decoration: underline;
+    text-shadow: 1px 1px 2px white;
 }
 .countdown {
     display: flex;
+    align-items: center;
     gap: 2px;
     margin-bottom: 10px;
-    border: 3px solid #151A21;
     border-radius: 8px;
 }
 .count {
@@ -15,10 +19,15 @@
     align-items: center;
     justify-content: center;
     padding: 5px;
-    /* background-color: #151A21; */
     border-radius: 8px;
     box-sizing: border-box;
     /* border: 3px solid #151A21; */
+    /* border: 3px solid #151A21; */
+}
+.seperator {
+    color: white;
+    font-size: 30px;
+    text-shadow: 1px 1px 2px white;
 }
 .number {
     margin: 0;

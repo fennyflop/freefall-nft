@@ -16,27 +16,29 @@ const MintRenderer : FC<IMintRenderer> = ({days, hours, minutes, seconds, comple
 
     return (
         <section className={styles.container}>
-            {/* <h2 className={styles.header}>public sale</h2> */}
+            <h2 className={styles.header}>until public sale</h2>
             <div className={styles.countdown}>
                 {days && 
                 <div className={styles.count}>
                     <p className={styles.number}>{days}</p>
                     <span className={styles.name}>days</span>
                 </div>}
-
+                <span className={styles.seperator}>:</span>
                 <div className={styles.count}>
                     <p className={styles.number}>{hours < 10 ? `0${hours}` : hours}</p>
                     <span className={styles.name}>hours</span>
                 </div>
-
+                <span className={styles.seperator}>:</span>
                 <div className={styles.count}>
                     <p className={styles.number}>{minutes < 10 ? `0${minutes}` : minutes}</p>
                     <span className={styles.name}>mins</span>
                 </div>
+                <span className={styles.seperator}>:</span>
                 <div className={styles.count}>
                     <p className={styles.number}>{seconds < 10 ? `0${seconds}` : seconds}</p>
                     <span className={styles.name}>secs</span>
                 </div>
+
             </div>
         </section>
     );
