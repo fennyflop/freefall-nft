@@ -9,6 +9,8 @@ import {
   removeAccountChangeListener,
 } from '@identity.com/solana-gateway-ts';
 
+import styles from './mint-button.module.css';
+
 type TMintButton = {
     onMint: () => Promise<void>;
     candyMachine?: CandyMachineAccount;
@@ -30,14 +32,12 @@ export const MintButton = ({onMint, candyMachine, isMinting, setIsMinting, isAct
       return 'SOLD OUT';
     } else if (isMinting) {
       return <p>loading</p>;
-    } else if (
-      candyMachine?.state.isPresale ||
-      candyMachine?.state.isWhitelistOnly
+    } else if (candyMachine?.state.isPresale || candyMachine?.state.isWhitelistOnly
     ) {
-      return 'WHITELIST MINT';
+      return 'Whitelist Mint';
     }
 
-    return 'MINT';
+    return 'Mint';
   };
 
   useEffect(() => {
@@ -80,11 +80,11 @@ export const MintButton = ({onMint, candyMachine, isMinting, setIsMinting, isAct
 
   return (
     <button
+      className={styles.button}
       disabled={isMinting || !isActive}
       onClick={async () => {
         if (candyMachine?.state.isActive && candyMachine?.state.gatekeeper) {
-          const network =
-            candyMachine.state.gatekeeper.gatekeeperNetwork.toBase58();
+          const network = candyMachine.state.gatekeeper.gatekeeperNetwork.toBase58();
           if (network === 'ignREusXmGrscGNUesoU9mxfds9AiYTezUKex2PsZV6') {
             if (gatewayStatus === GatewayStatus.ACTIVE) {
               await onMint();

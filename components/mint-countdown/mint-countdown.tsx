@@ -18,12 +18,16 @@ const MintRenderer : FC<IMintRenderer> = ({days, hours, minutes, seconds, comple
         <section className={styles.container}>
             <h2 className={styles.header}>until public sale</h2>
             <div className={styles.countdown}>
-                {days && 
+                {days ?
+                <>
                 <div className={styles.count}>
                     <p className={styles.number}>{days}</p>
                     <span className={styles.name}>days</span>
-                </div>}
+                </div>
                 <span className={styles.seperator}>:</span>
+                </>
+                : <></>
+                }
                 <div className={styles.count}>
                     <p className={styles.number}>{hours < 10 ? `0${hours}` : hours}</p>
                     <span className={styles.name}>hours</span>

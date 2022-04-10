@@ -1,0 +1,16 @@
+.button {
+    font-weight: bold;
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    color: white;
+    background-color: #512da8;
+}
+.button:hover {
+    cursor: pointer;
+}
+.button:disabled {
+    opacity: .8;
+}

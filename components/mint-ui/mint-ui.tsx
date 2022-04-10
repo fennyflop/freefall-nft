@@ -4,12 +4,13 @@ import { useWallet } from '@solana/wallet-adapter-react';
 
 import styles from './mint-ui.module.css';
 import { PublicKey, Transaction } from '@solana/web3.js';
-import { AlertState, getAtaForMint, toDate } from '../../utils/utils';
+import { AlertState, formatNumber, getAtaForMint, toDate } from '../../utils/utils';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { awaitTransactionSignatureConfirmation, CandyMachineAccount, getCandyMachineState, getCountdownDate, mintOneToken } from '../../utils/candy-machine';
 import { MintButton } from '../mint-button/mint-button';
 import { updateMintCount } from '../../utils/firebase';
 import { MintContext } from '../../context/mint-count';
+import Price from '../price/price';
 
 require('@solana/wallet-adapter-react-ui/styles.css');
 
@@ -224,8 +225,9 @@ const MintUI : FC<IMintUI> = memo(({candyMachineId, txTimeout, rpcHost, connecti
                     isMinting={isUserMinting}
                     setIsMinting={val => setIsUserMinting(val)}
                     onMint={onMint}
-                    isActive={true || (isPresale && isWhitelistUser)}
+                    isActive={isActive || (isPresale && isWhitelistUser)}
                   />
+                  <Price isWhiteListed={isWhitelistUser} discountPrice={formatNumber.asNumber(discountPrice)} price={formatNumber.asNumber(candyMachine?.state.price)} />
                 </>
               }
           </section>
