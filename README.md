@@ -14,5 +14,6 @@ By the end of this summer we want to make templates for:
 * Whitelist identificator (sign)
 * Optimized global state (redux/react context/etc.)
 * SEO for next
+* Wait for UI design
 # What needs to be done in global state:
 * If the countdown is completed or not
